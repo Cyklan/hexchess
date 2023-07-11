@@ -1,4 +1,5 @@
 import { Application } from "pixi.js";
+import { Board } from "./board/Board";
 
 const SCREEN_HEIGHT = window.innerHeight;
 const PADDING = 50;
@@ -15,6 +16,7 @@ export class HexChess {
       resolution: 1,
     });
     container.appendChild(app.view as HTMLCanvasElement);
+    new Board(app);
   }
 
   public static createInstance(container: HTMLDivElement): HexChess {
