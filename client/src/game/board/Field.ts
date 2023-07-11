@@ -31,6 +31,7 @@ export class Field {
   public isStartTile = false;
   public canBeCaptured = false;
   public wasPartOfPreviouseMove = false;
+  public isInteractive = true;
 
   private highlightFields: (
     patterns: PieceMovementPattern[],
@@ -65,6 +66,7 @@ export class Field {
     colOffset: number,
     colPosition: number,
     myColor: "black" | "white" = "white",
+    isInteractive = true,
     highlightFields: (
       patterns: PieceMovementPattern[],
       coordinate: Coordinate
@@ -79,6 +81,7 @@ export class Field {
     this.highlightFields = highlightFields;
     this.movePiece = movePiece;
     this.playerColor = myColor;
+    this.isInteractive = isInteractive;
 
     this.color = this.calculateFieldColor(myColor);
     this.hexSize = (app.view.width - 50) / (9 * 2 + 1);
@@ -118,7 +121,7 @@ export class Field {
     // center of hex
     const center = layout.hexToPixel(this.coordinate);
     // hex.addChild(text);
-    
+
     if (this.isHighlighted && !this.canBeCaptured) {
       const circle = new Graphics();
       circle.beginFill(0x000000, 0.25);
@@ -161,7 +164,7 @@ export class Field {
   };
 
   private onClick = (hex: Graphics) => {
-    hex.interactive = true;
+    hex.interactive = this.isInteractive;
     if (this._piece) {
       hex.onclick = () => {
         if (this._piece?.color !== this.playerColor) {
@@ -192,7 +195,7 @@ export class Field {
   };
 
   public enable = () => {
-    this.hexagon.interactive = true;
+    this.hexagon.interactive = this.isInteractive;
   };
 
   public highlightStartTile = () => {

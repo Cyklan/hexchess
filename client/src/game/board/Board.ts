@@ -20,9 +20,11 @@ export class Board {
   myColor: PieceColor = "white";
   isItMyTurn = this.myColor === "white";
   history: History[] = [];
+  isInteractive: boolean;
 
-  constructor(app: Application) {
+  constructor(app: Application, interactive = true) {
     this.app = app;
+    this.isInteractive = interactive;
     this.generateBoard();
     this.placePieces();
   }
@@ -39,6 +41,7 @@ export class Board {
           q + BOARD_SIZE,
           fieldsDrawn,
           this.myColor,
+          this.isInteractive,
           (patterns, origin) => this.highlightFields(patterns, origin),
           (to) => this.movePiece(to)
         );
