@@ -6,6 +6,8 @@ import {
   OpponentPiecesStartPosition,
 } from "../pieces/PieceOrientation";
 import { Piece } from "../pieces/Piece";
+import { PieceMovementPattern } from "../pieces/PieceMovementPattern";
+import { Coordinate } from "./Coordinate";
 
 export const BOARD_SIZE = 5;
 export const BOARD_FILE_SIZE = BOARD_SIZE * 2 + 1;
@@ -32,7 +34,9 @@ export class Board {
           { q, r },
           this.app,
           q + BOARD_SIZE,
-          fieldsDrawn
+          fieldsDrawn,
+          this.myColor,
+          (patterns, origin) => this.highlightFields(patterns, origin)
         );
         fieldsDrawn++;
         this.fields.set(JSON.stringify(field.coordinate), field);
@@ -41,13 +45,18 @@ export class Board {
   }
 
   placePieces() {
+    const field = this.fields.get(JSON.stringify({ q: 0, r: 0 }));
+    if (!field) {
+      return;
+    }
+
     for (const { piece, coordinate } of MyPiecesStartPosition) {
       const field = this.fields.get(JSON.stringify(coordinate));
       if (!field) {
         continue;
       }
 
-      field.piece = new Piece(piece, this.myColor);
+      field.piece = new Piece(piece, this.myColor, coordinate);
     }
 
     for (const { piece, coordinate } of OpponentPiecesStartPosition) {
@@ -58,8 +67,66 @@ export class Board {
 
       field.piece = new Piece(
         piece,
-        this.myColor === "white" ? "black" : "white"
+        this.myColor === "white" ? "black" : "white",
+        coordinate
       );
     }
+  }
+
+  highlightFields(
+    movementPatterns: PieceMovementPattern[],
+    origin: Coordinate
+  ) {
+    const validFields = this.findValidFields(movementPatterns, origin);
+    for (const field of validFields) {
+      field.highlight();
+    }
+  }
+
+  private findValidFields(
+    movementPatterns: PieceMovementPattern[],
+    origin: Coordinate
+  ) {
+    const validFields: Field[] = [];
+
+    for (const field of this.fields.values()) {
+      field.unhighlight();
+    }
+
+    for (const pattern of movementPatterns) {
+      const { q, r } = pattern;
+      let target: Coordinate = {
+        q: origin.q + q,
+        r: origin.r + r,
+      };
+      let field = this.fields.get(JSON.stringify(target));
+      while (field != null) {
+        if (field.piece) {
+          // test if field ahead is occupied by opponent
+          // its only valid if its an opponents piece
+          if (field.piece.color !== this.myColor) {
+            validFields.push(field);
+          }
+
+          break;
+        }
+
+        if (!pattern.onlyForCapture) {
+          validFields.push(field);
+        }
+
+        if (pattern.infinite) {
+          target = {
+            q: target.q + q,
+            r: target.r + r,
+          };
+          field = this.fields.get(JSON.stringify(target));
+        } else {
+          break;
+        }
+      }
+    }
+
+    return validFields;
   }
 }

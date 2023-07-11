@@ -15,7 +15,7 @@ export const MyPiecesStartPosition: {
   },
   {
     coordinate: { q: -3, r: 4 },
-    piece: PieceType.Rook,
+    piece: PieceType.Pawn,
   },
   {
     coordinate: { q: -2, r: 5 },
