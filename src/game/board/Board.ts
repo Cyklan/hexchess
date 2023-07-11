@@ -85,6 +85,21 @@ export class Board {
     for (const field of validFields) {
       field.highlight();
     }
+
+    const lastMove = this.history[this.history.length - 1];
+    if (!lastMove) {
+      return;
+    }
+
+    const originField = this.fields.get(JSON.stringify(lastMove.from));
+    const targetField = this.fields.get(JSON.stringify(lastMove.to));
+  
+    if (!originField || !targetField) {
+      return;
+    }
+
+    originField.highlightAsPreviousMove()
+    targetField.highlightAsPreviousMove()
   }
 
   private findValidFields(

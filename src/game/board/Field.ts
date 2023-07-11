@@ -30,6 +30,7 @@ export class Field {
   private isHighlighted = false;
   public isStartTile = false;
   public canBeCaptured = false;
+  public wasPartOfPreviouseMove = false;
 
   private highlightFields: (
     patterns: PieceMovementPattern[],
@@ -213,5 +214,15 @@ export class Field {
       this.hexagon.removeChild(this.highlightCircle);
       this.highlightCircle = null;
     }
+  };
+
+  public highlightAsPreviousMove = () => {
+    this.hexagon.tint = 0x90ee90;
+    this.wasPartOfPreviouseMove = true;
+  };
+
+  public unhighlightAsPreviousMove = () => {
+    this.unhighlight();
+    this.wasPartOfPreviouseMove = false;
   };
 }
