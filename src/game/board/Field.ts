@@ -36,6 +36,8 @@ export class Field {
     coordinate: Coordinate
   ) => void;
 
+  private movePiece: (to: Coordinate) => void;
+
   // private get hex_width() {
   //   return this.hexSize * 2;
   // }
@@ -65,7 +67,8 @@ export class Field {
     highlightFields: (
       patterns: PieceMovementPattern[],
       coordinate: Coordinate
-    ) => void
+    ) => void,
+    movePiece: (to: Coordinate) => void
   ) {
     this.coordinate = coordinate;
     this.app = app;
@@ -73,6 +76,7 @@ export class Field {
     this.colIndex = colOffset;
     this.colPosition = colPosition;
     this.highlightFields = highlightFields;
+    this.movePiece = movePiece;
     this.playerColor = myColor;
 
     this.color = this.calculateFieldColor(myColor);
@@ -160,23 +164,21 @@ export class Field {
     if (this._piece) {
       hex.onclick = () => {
         if (this._piece?.color !== this.playerColor) {
-          // only allow take moves
+          // do check if piece can be captured
+          if (this.isHighlighted && this.canBeCaptured) {
+            this.movePiece(this.coordinate);
+            this.highlightFields([], this.coordinate);
+          }
           return;
         }
-
-        if (this.isHighlighted) {
-          this.highlightFields([], this.coordinate);
-        } else {
-          this.isStartTile = true;
-          this.highlightFields(
-            this._piece.getMovementPattern(),
-            this.coordinate
-          );
-          this.highlightStartTile();
-        }
+        this.highlightFields(this._piece.getMovementPattern(), this.coordinate);
+        this.highlightStartTile();
       };
     } else {
       hex.onclick = () => {
+        if (this.isHighlighted) {
+          this.movePiece(this.coordinate);
+        }
         this.highlightFields([], this.coordinate);
       };
     }
@@ -186,6 +188,7 @@ export class Field {
 
   public highlightStartTile = () => {
     this.hexagon.tint = 0x90ee90;
+    this.isStartTile = true;
   };
 
   public highlight = () => {
@@ -197,8 +200,8 @@ export class Field {
     this.hexagon.tint = 0xffffff;
     this.isHighlighted = false;
     this.canBeCaptured = false;
+    this.isStartTile = false;
     if (this.highlightCircle) {
-      console.log(this.hexagon.children);
       this.hexagon.removeChild(this.highlightCircle);
       this.highlightCircle = null;
     }

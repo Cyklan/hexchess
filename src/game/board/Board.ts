@@ -36,7 +36,8 @@ export class Board {
           q + BOARD_SIZE,
           fieldsDrawn,
           this.myColor,
-          (patterns, origin) => this.highlightFields(patterns, origin)
+          (patterns, origin) => this.highlightFields(patterns, origin),
+          (to) => this.movePiece(to)
         );
         fieldsDrawn++;
         this.fields.set(JSON.stringify(field.coordinate), field);
@@ -137,5 +138,24 @@ export class Board {
     }
 
     return validFields;
+  }
+
+  public movePiece(target: Coordinate) {
+    const originField = Array.from(this.fields.values()).find(
+      (field) => field.isStartTile
+    );
+    const targetField = this.fields.get(JSON.stringify(target));
+
+    console.log("origin", originField)
+    console.log("target", targetField)
+
+    if (!originField || !targetField) {
+      return;
+    }
+
+    if (originField.piece) {
+      targetField.piece = originField.piece;
+      originField.piece = null;
+    }
   }
 }
