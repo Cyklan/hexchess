@@ -186,6 +186,14 @@ export class Field {
     return hex;
   };
 
+  public disable = () => {
+    this.hexagon.interactive = false;
+  };
+
+  public enable = () => {
+    this.hexagon.interactive = true;
+  };
+
   public highlightStartTile = () => {
     this.hexagon.tint = 0x90ee90;
     this.isStartTile = true;

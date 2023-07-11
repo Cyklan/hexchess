@@ -8,6 +8,7 @@ import {
 import { Piece, PieceType } from "../pieces/Piece";
 import { PieceMovementPattern } from "../pieces/PieceMovementPattern";
 import { Coordinate } from "./Coordinate";
+import { History } from "../history";
 
 export const BOARD_SIZE = 5;
 export const BOARD_FILE_SIZE = BOARD_SIZE * 2 + 1;
@@ -17,6 +18,8 @@ export class Board {
   app: Application;
   fields: Map<string, Field> = new Map();
   myColor: PieceColor = "white";
+  isItMyTurn = this.myColor === "white";
+  history: History[] = [];
 
   constructor(app: Application) {
     this.app = app;
@@ -164,6 +167,16 @@ export class Board {
       return;
     }
 
+    const move: History = {
+      from: originField.coordinate,
+      to: target,
+      move: this.history.length + 1,
+      piece: originField.piece!.type,
+      capturedPiece: targetField.piece?.type,
+    };
+
+    this.history.push(move);
+
     // determine wether the move was by a pawn and two spaces
     // if so, set the en passant flag
     if (
@@ -184,5 +197,8 @@ export class Board {
       originField.piece = null;
       targetField.piece.hasMoved = true;
     }
+
+    this.isItMyTurn = false;
+    Array.from(this.fields.values()).forEach((field) => field.disable());
   }
 }
