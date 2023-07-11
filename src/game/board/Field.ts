@@ -1,4 +1,4 @@
-import { Application, Graphics, Point, Text } from "pixi.js";
+import { Application, DisplayObject, Graphics, Point, Text } from "pixi.js";
 import { BoardColor, getColor } from "./BoardColor";
 import { Coordinate } from "./Coordinate";
 import { Layout } from "./Layout";
@@ -22,10 +22,13 @@ export class Field {
   private colIndex;
   private colPosition;
   private app: Application;
-  private hexagon: Graphics;
   private playerColor: PieceColor;
 
+  private hexagon: Graphics;
+  private highlightCircle: DisplayObject | null = null;
+
   private isHighlighted = false;
+  public isStartTile = false;
 
   private highlightFields: (
     patterns: PieceMovementPattern[],
@@ -110,6 +113,19 @@ export class Field {
     const center = layout.hexToPixel(this.coordinate);
     // hex.addChild(text);
 
+    if (this.isHighlighted) {
+      const circle = new Graphics();
+      circle.beginFill(0x000000, 0.25);
+      circle.drawEllipse(
+        center.x,
+        center.y,
+        this.hexSize / 4,
+        this.hexSize / 4
+      );
+      circle.endFill();
+      this.highlightCircle = hex.addChild(circle);
+    }
+
     if (this._piece) {
       this._piece.sprite.anchor.set(0.5);
       this._piece.sprite.position = center;
@@ -118,7 +134,7 @@ export class Field {
     text.anchor.set(0.5);
     text.position = center;
 
-    this.app.stage.addChild(hex);
+    this.hexagon = this.app.stage.addChild(hex);
 
     return this.registerEvents(hex);
   }
@@ -145,6 +161,7 @@ export class Field {
         if (this.isHighlighted) {
           this.highlightFields([], this.coordinate);
         } else {
+          this.isStartTile = true;
           this.highlightFields(
             this._piece.getMovementPattern(),
             this.coordinate
@@ -161,9 +178,8 @@ export class Field {
     return hex;
   };
 
-  private highlightStartTile = () => {
-    this.hexagon.tint = 0x00ff00;
-    this.isHighlighted = true;
+  public highlightStartTile = () => {
+    this.hexagon.tint = 0x90ee90;
   };
 
   public highlight = () => {
@@ -174,5 +190,10 @@ export class Field {
   public unhighlight = () => {
     this.hexagon.tint = 0xffffff;
     this.isHighlighted = false;
+    if (this.highlightCircle) {
+      console.log(this.hexagon.children);
+      this.hexagon.removeChild(this.highlightCircle);
+      this.highlightCircle = null;
+    }
   };
 }
