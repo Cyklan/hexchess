@@ -10,7 +10,7 @@ export const Game = () => {
     if (game) return;
 
     setGame(HexChess.createInstance(gameContainer.current));
-  }, [gameContainer]);
+  }, [gameContainer, game]);
 
   return <div ref={gameContainer}></div>;
 };
