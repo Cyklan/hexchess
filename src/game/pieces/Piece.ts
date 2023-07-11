@@ -23,7 +23,12 @@ export class Piece {
   constructor(type: PieceType, color: PieceColor, coordinate: Coordinate) {
     this.type = type;
     this.color = color;
-    this.sprite = Sprite.from(getPieceSprite(type, color));
+    this.sprite = Sprite.from(getPieceSprite(type, color), {
+      resolution: 2,
+      resourceOptions: {
+        scale: 2,
+      },
+    });
     this.coordinate = coordinate;
   }
 
