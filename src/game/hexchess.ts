@@ -12,7 +12,7 @@ export class HexChess {
     const app = new Application({
       width: size,
       height: size,
-      backgroundColor: 0x1099bb,
+      backgroundColor: 0x242424,
       resolution: 1,
     });
     container.appendChild(app.view as HTMLCanvasElement);

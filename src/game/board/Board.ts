@@ -94,6 +94,11 @@ export class Board {
       field.unhighlight();
     }
 
+    const originField = this.fields.get(JSON.stringify(origin));
+    if (!originField) {
+      return validFields;
+    }
+
     for (const pattern of movementPatterns) {
       const { q, r } = pattern;
       let target: Coordinate = {
@@ -106,12 +111,12 @@ export class Board {
           // test if field ahead is occupied by opponent
           // its only valid if its an opponents piece
           if (field.piece.color !== this.myColor) {
-            if (field.piece.type !== PieceType.Pawn) {
+            if (originField.piece!.type !== PieceType.Pawn) {
               field.canBeCaptured = true;
               validFields.push(field);
             } else {
               // if its a pawn, its only valid if its diagonal
-              if (q !== 0) {
+              if (q !== 0 && r !== -1) {
                 field.canBeCaptured = true;
                 validFields.push(field);
               }
@@ -125,7 +130,13 @@ export class Board {
           validFields.push(field);
         }
 
-        if (pattern.infinite) {
+        if (
+          pattern.infinite ||
+          (pattern.firstPawnMove &&
+            originField.piece?.type === PieceType.Pawn &&
+            !originField.piece.hasMoved)
+        ) {
+          pattern.firstPawnMove = false;
           target = {
             q: target.q + q,
             r: target.r + r,
@@ -146,8 +157,8 @@ export class Board {
     );
     const targetField = this.fields.get(JSON.stringify(target));
 
-    console.log("origin", originField)
-    console.log("target", targetField)
+    console.log("origin", originField);
+    console.log("target", targetField);
 
     if (!originField || !targetField) {
       return;
@@ -156,6 +167,7 @@ export class Board {
     if (originField.piece) {
       targetField.piece = originField.piece;
       originField.piece = null;
+      targetField.piece.hasMoved = true;
     }
   }
 }

@@ -17,6 +17,7 @@ export class Piece {
   color: PieceColor;
   sprite: Sprite;
   coordinate: Coordinate;
+  hasMoved = false;
 
   constructor(type: PieceType, color: PieceColor, coordinate: Coordinate) {
     this.type = type;
@@ -62,6 +63,7 @@ export class Piece {
       r: -1,
       infinite: false,
       onlyForCapture: false,
+      firstPawnMove: true,
     };
 
     const forwardLeftPattern: PieceMovementPattern = {

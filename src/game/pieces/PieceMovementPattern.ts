@@ -3,4 +3,5 @@ export type PieceMovementPattern = {
   r: number;
   infinite: boolean;
   onlyForCapture: boolean;
+  firstPawnMove?: boolean;
 };
