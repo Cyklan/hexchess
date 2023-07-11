@@ -10,6 +10,13 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.4.1",
+    "@types/ws": "^8.5.5",
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.1",
+    "async-mutex": "^0.4.0",
+    "ws": "^8.13.0",
+    "zod": "^3.21.4"
   }
 }
