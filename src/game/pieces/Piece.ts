@@ -18,6 +18,7 @@ export class Piece {
   sprite: Sprite;
   coordinate: Coordinate;
   hasMoved = false;
+  canBeCapturedEnPassant = false;
 
   constructor(type: PieceType, color: PieceColor, coordinate: Coordinate) {
     this.type = type;

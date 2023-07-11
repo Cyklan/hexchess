@@ -164,7 +164,22 @@ export class Board {
       return;
     }
 
+    // determine wether the move was by a pawn and two spaces
+    // if so, set the en passant flag
+    if (
+      originField.piece?.type === PieceType.Pawn &&
+      Math.abs(originField.coordinate.r - targetField.coordinate.r) === 2
+    ) {
+      originField.piece.canBeCapturedEnPassant = true;
+    }
+
     if (originField.piece) {
+      if (
+        originField.piece.hasMoved &&
+        originField.piece.canBeCapturedEnPassant
+      ) {
+        originField.piece.canBeCapturedEnPassant = false;
+      }
       targetField.piece = originField.piece;
       originField.piece = null;
       targetField.piece.hasMoved = true;
