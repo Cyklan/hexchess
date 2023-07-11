@@ -35,13 +35,13 @@ export class Field {
     coordinate: Coordinate
   ) => void;
 
-  private get hex_width() {
-    return this.hexSize * 2;
-  }
+  // private get hex_width() {
+  //   return this.hexSize * 2;
+  // }
 
-  private get hex_height() {
-    return this.hex_width * 0.8660254;
-  }
+  // private get hex_height() {
+  //   return this.hex_width * 0.8660254;
+  // }
 
   public get piece() {
     return this._piece;
