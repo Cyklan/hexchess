@@ -5,7 +5,7 @@ import {
   MyPiecesStartPosition,
   OpponentPiecesStartPosition,
 } from "../pieces/PieceOrientation";
-import { Piece } from "../pieces/Piece";
+import { Piece, PieceType } from "../pieces/Piece";
 import { PieceMovementPattern } from "../pieces/PieceMovementPattern";
 import { Coordinate } from "./Coordinate";
 
@@ -105,7 +105,16 @@ export class Board {
           // test if field ahead is occupied by opponent
           // its only valid if its an opponents piece
           if (field.piece.color !== this.myColor) {
-            validFields.push(field);
+            if (field.piece.type !== PieceType.Pawn) {
+              field.canBeCaptured = true;
+              validFields.push(field);
+            } else {
+              // if its a pawn, its only valid if its diagonal
+              if (q !== 0) {
+                field.canBeCaptured = true;
+                validFields.push(field);
+              }
+            }
           }
 
           break;

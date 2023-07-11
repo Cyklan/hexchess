@@ -29,6 +29,7 @@ export class Field {
 
   private isHighlighted = false;
   public isStartTile = false;
+  public canBeCaptured = false;
 
   private highlightFields: (
     patterns: PieceMovementPattern[],
@@ -113,7 +114,7 @@ export class Field {
     const center = layout.hexToPixel(this.coordinate);
     // hex.addChild(text);
 
-    if (this.isHighlighted) {
+    if (this.isHighlighted && !this.canBeCaptured) {
       const circle = new Graphics();
       circle.beginFill(0x000000, 0.25);
       circle.drawEllipse(
@@ -123,6 +124,11 @@ export class Field {
         this.hexSize / 4
       );
       circle.endFill();
+      this.highlightCircle = hex.addChild(circle);
+    } else if (this.isHighlighted && this.canBeCaptured) {
+      const circle = new Graphics();
+      circle.lineStyle(5, 0, 0.3);
+      circle.drawCircle(center.x, center.y, this.hexSize / 1.5);
       this.highlightCircle = hex.addChild(circle);
     }
 
@@ -190,6 +196,7 @@ export class Field {
   public unhighlight = () => {
     this.hexagon.tint = 0xffffff;
     this.isHighlighted = false;
+    this.canBeCaptured = false;
     if (this.highlightCircle) {
       console.log(this.hexagon.children);
       this.hexagon.removeChild(this.highlightCircle);
