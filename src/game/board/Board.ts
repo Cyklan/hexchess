@@ -116,7 +116,7 @@ export class Board {
               validFields.push(field);
             } else {
               // if its a pawn, its only valid if its diagonal
-              if (q !== 0 && r !== -1) {
+              if (q !== 0) {
                 field.canBeCaptured = true;
                 validFields.push(field);
               }
