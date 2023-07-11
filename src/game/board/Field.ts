@@ -38,12 +38,12 @@ export class Field {
     colPosition: number
   ) {
     this.coordinate = coordinate;
-    this.color = this.calculateFieldColor(coordinate);
     this.app = app;
     this.offset = new Point(app.view.width / 2, app.view.height / 2);
     this.colIndex = colOffset;
     this.colPosition = colPosition;
-
+    
+    this.color = this.calculateFieldColor(coordinate);
     this.hexSize = (app.view.width - 50) / (9 * 2 + 1);
 
     this.sprite = this.getHexagonSprite();
@@ -52,6 +52,7 @@ export class Field {
 
   private calculateFieldColor(_coordinate: Coordinate) {
     const index = (this.colIndex + this.colPosition) % COLOR_ORDER.length;
+    console.log(index)
     return COLOR_ORDER[index];
   }
 
@@ -80,7 +81,7 @@ export class Field {
     const corners = layout.polygonCorners(this.coordinate);
     const coordinates = corners.map((corner) => [corner.x, corner.y]).flat(1);
 
-    console.log(this.getHexColor())
+    console.log(this.color)
 
     hex.beginFill(this.getHexColor());
     hex.lineStyle(2, 0x000000, 1);
