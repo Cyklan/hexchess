@@ -93,13 +93,13 @@ export class Board {
 
     const originField = this.fields.get(JSON.stringify(lastMove.from));
     const targetField = this.fields.get(JSON.stringify(lastMove.to));
-  
+
     if (!originField || !targetField) {
       return;
     }
 
-    originField.highlightAsPreviousMove()
-    targetField.highlightAsPreviousMove()
+    originField.highlightAsPreviousMove();
+    targetField.highlightAsPreviousMove();
   }
 
   private findValidFields(
@@ -170,6 +170,17 @@ export class Board {
   }
 
   public movePiece(target: Coordinate) {
+    // this removes my en passant after my next move
+    Array.from(this.fields.values()).forEach((field) => {
+      if (field.piece?.color !== this.myColor) {
+        return;
+      }
+      if (field.piece) {
+        field.piece.canBeCapturedEnPassant = false;
+      }
+      field.canBeCaptured = false;
+    });
+
     const originField = Array.from(this.fields.values()).find(
       (field) => field.isStartTile
     );
@@ -199,6 +210,7 @@ export class Board {
       Math.abs(originField.coordinate.r - targetField.coordinate.r) === 2
     ) {
       originField.piece.canBeCapturedEnPassant = true;
+      originField.canBeCaptured = true;
     }
 
     if (originField.piece) {

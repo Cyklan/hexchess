@@ -118,7 +118,7 @@ export class Field {
     // center of hex
     const center = layout.hexToPixel(this.coordinate);
     // hex.addChild(text);
-
+    
     if (this.isHighlighted && !this.canBeCaptured) {
       const circle = new Graphics();
       circle.beginFill(0x000000, 0.25);
